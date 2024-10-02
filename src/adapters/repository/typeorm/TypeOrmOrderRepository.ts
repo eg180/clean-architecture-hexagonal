@@ -1,108 +1,101 @@
 import { Repository as RepositoryEntity } from "typeorm";
-import { Item } from "../../../core/domain/Item";
-import { Order } from "../../../core/domain/Order";
-import { Payment } from "../../../core/domain/Payment";
+import { Item } from "../../../core/domain/items/Item";
+import { Order } from "../../../core/domain/orders/Order";
+import { Payment } from "../../../core/domain/payments/Payment";
 import { Repository } from "../../../core/ports/repository/Repository";
 import { AppDataSource } from "./data-source";
 import { ItemEntity } from "./entity/ItemEntity";
 import { OrderEntity } from "./entity/OrderEntity";
 import { PaymentEntity } from "./entity/PaymentEntity";
 
-export class TypeOrmOrderRepository implements Repository<Order>{
+export class TypeOrmOrderRepository implements Repository<Order> {
+	private readonly entityManager: RepositoryEntity<OrderEntity>;
 
-  private readonly entityManager: RepositoryEntity<OrderEntity>
+	constructor() {
+		this.entityManager = AppDataSource.getRepository(OrderEntity);
+	}
 
-  constructor() {
-    this.entityManager = AppDataSource.getRepository(OrderEntity)
-  }
+	async save(order: Order): Promise<Order> {
+		const orderEntity = this.mapToOrderEntity(order);
 
-  async save(order: Order): Promise<Order> {
+		const orderSaved = await this.entityManager.save(orderEntity);
 
-    const orderEntity = this.mapToOrderEntity(order)
+		return this.mapToOrderModel(orderSaved);
+	}
 
-    const orderSaved = await this.entityManager.save(orderEntity)
+	async getById(id: number): Promise<Order> {
+		const orderEntity = await this.entityManager
+			.createQueryBuilder("order")
+			.where("order.id = :id", { id })
+			.leftJoinAndSelect("order.items", "item")
+			.leftJoinAndSelect("order.payments", "payment")
+			.getOne();
 
-    return this.mapToOrderModel(orderSaved)
-  }
+		return this.mapToOrderModel(orderEntity);
+	}
 
-  async getById(id: number): Promise<Order> {
+	async getAll(): Promise<Order[]> {
+		const allOrders = await this.entityManager
+			.createQueryBuilder("order")
+			.leftJoinAndSelect("order.items", "item")
+			.leftJoinAndSelect("order.payments", "payment")
+			.getMany();
 
-    const orderEntity = await this.entityManager.createQueryBuilder("order")
-                                                .where("order.id = :id", { id })
-                                                .leftJoinAndSelect("order.items", "item")
-                                                .leftJoinAndSelect("order.payments", "payment")
-                                                .getOne()
+		return allOrders.map((order) => this.mapToOrderModel(order));
+	}
 
-    return this.mapToOrderModel(orderEntity)
-  }
+	private mapToOrderModel(orderEntity: OrderEntity): Order {
+		const itemModel = orderEntity.items.map((item) => {
+			const itemModel: Item = {
+				id: item.id,
+				name: item.name,
+				price: item.price,
+			};
+			return itemModel;
+		});
 
-  async getAll(): Promise<Order[]> {
+		const paymentModel = orderEntity.payments.map((payment) => {
+			const paymentModel: Payment = {
+				id: payment.id,
+				paidAt: payment.paidAt,
+			};
+			return paymentModel;
+		});
 
-    const allOrders = await this.entityManager.createQueryBuilder("order")
-                                                .leftJoinAndSelect("order.items", "item")
-                                                .leftJoinAndSelect("order.payments", "payment")
-                                                .getMany()
+		const orderModel: Order = {
+			id: orderEntity.id,
+			amount: orderEntity.amount,
+			items: itemModel,
+			payments: paymentModel,
+			createdAt: orderEntity.createdAt,
+		};
 
-    return allOrders.map((order) => this.mapToOrderModel(order))
-  }
+		return orderModel;
+	}
 
-  private mapToOrderModel(orderEntity: OrderEntity): Order {
+	private mapToOrderEntity(order: Order): OrderEntity {
+		const itemList = order.items.map((item) => {
+			const itemEntity: ItemEntity = new ItemEntity();
+			itemEntity.id = item.id;
+			itemEntity.name = item.name;
+			itemEntity.price = item.price;
+			return itemEntity;
+		});
 
-    const itemModel = orderEntity.items.map((item) => {
-      const itemModel: Item = {
-        id: item.id,
-        name: item.name,
-        price: item.price
-      }
-      return itemModel
-    })
+		const paymentList = order.payments.map((payment) => {
+			const paymentEntity: PaymentEntity = new PaymentEntity();
+			paymentEntity.id = payment.id;
+			paymentEntity.paidAt = payment.paidAt;
+			return paymentEntity;
+		});
 
-    const paymentModel = orderEntity.payments.map((payment) => {
-      const paymentModel: Payment = {
-        id: payment.id,
-        paidAt: payment.paidAt
-      }
-      return paymentModel
-    })
+		const orderEntity: OrderEntity = new OrderEntity();
+		orderEntity.id = order.id;
+		orderEntity.amount = order.amount;
+		orderEntity.items = itemList;
+		orderEntity.payments = paymentList;
+		orderEntity.createdAt = order.createdAt;
 
-    const orderModel: Order = {
-      id: orderEntity.id,
-      amount: orderEntity.amount,
-      items: itemModel,
-      payments: paymentModel,
-      createdAt: orderEntity.createdAt
-    }
-
-    return orderModel
-
-  }
-
-  private mapToOrderEntity(order: Order): OrderEntity {
-
-    const itemList = order.items.map((item) => {
-      const itemEntity: ItemEntity = new ItemEntity()
-      itemEntity.id = item.id
-      itemEntity.name = item.name
-      itemEntity.price = item.price
-      return itemEntity
-    })
-
-
-    const paymentList = order.payments.map((payment) => {
-      const paymentEntity: PaymentEntity = new PaymentEntity()
-      paymentEntity.id = payment.id
-      paymentEntity.paidAt = payment.paidAt
-      return paymentEntity
-    })
-
-    const orderEntity: OrderEntity = new OrderEntity()
-    orderEntity.id = order.id
-    orderEntity.amount = order.amount
-    orderEntity.items = itemList
-    orderEntity.payments = paymentList
-    orderEntity.createdAt = order.createdAt
-
-    return orderEntity
-  }
-
+		return orderEntity;
+	}
 }

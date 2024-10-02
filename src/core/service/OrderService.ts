@@ -1,65 +1,67 @@
-import { Item } from "../domain/Item";
-import { Order } from "../domain/Order";
-import { Payment } from "../domain/Payment";
+import { Item } from "../domain/items/Item";
+import { Order } from "../domain/orders/Order";
+import { Payment } from "../domain/payments/Payment";
 import { NotFoundError } from "../error/NotFoundError";
 import { Repository } from "../ports/repository/Repository";
 
 import { Client } from "../ports/client/Client";
 
-export class OrderService {
+export class OrderService implements Repository<Order> {
+	private readonly orderRepository: Repository<Order>;
+	private readonly itemRepository: Repository<Item>;
+	private readonly paymentClient: Client<Payment>;
 
-  private readonly orderRepository: Repository<Order>
-  private readonly itemRepository: Repository<Item>
-  private readonly paymentClient: Client<Payment>
+	constructor(
+		orderRepository: Repository<Order>,
+		itemRepository: Repository<Item>,
+		paymentClient: Client<Payment>
+	) {
+		this.orderRepository = orderRepository;
+		this.itemRepository = itemRepository;
+		this.paymentClient = paymentClient;
+	}
 
-  constructor(orderRepository: Repository<Order>, itemRepository: Repository<Item>, paymentClient: Client<Payment>) {
-    this.orderRepository = orderRepository
-    this.itemRepository = itemRepository
-    this.paymentClient = paymentClient
-  }
+	public async save(order: Order): Promise<Order> {
+		order.createdAt = new Date();
 
-  public async createOrder(order: Order): Promise<Order> {
+		const itemResult = await Promise.all(
+			order.items.map(async (item) => {
+				return await this.itemRepository.getById(item.id);
+			})
+		);
 
-    order.createdAt = new Date()
+		itemResult.forEach((item) => {
+			if (!item) {
+				throw new NotFoundError("Item not found in database");
+			}
+		});
 
-    const itemResult = await Promise.all(order.items.map(async (item) => {
-      return await this.itemRepository.getById(item.id)
-    }))
+		order.items = itemResult;
 
-    itemResult.forEach((item) => {
-      if(!item){
-        throw new NotFoundError('Item not found in database')
-      }
-    })
+		const payment = await this.createPayment(order);
 
-    order.items = itemResult
+		const paymentResult = await this.paymentClient.send(payment);
 
-    const payment = await this.createPayment(order)
+		order.payments = [paymentResult];
 
-    const paymentResult = await this.paymentClient.send(payment)
+		const orderSaved = await this.orderRepository.save(order);
 
-    order.payments = [paymentResult]
+		return orderSaved;
+	}
 
-    const orderSaved = await this.orderRepository.save(order)
+	public async getById(id: number): Promise<Order> {
+		return await this.orderRepository.getById(id);
+	}
 
-    return orderSaved
+	public async getAll(): Promise<Order[]> {
+		return await this.orderRepository.getAll();
+	}
 
-  }
+	private async createPayment(order: Order): Promise<Payment> {
+		const payment = {
+			order,
+		} as Payment;
 
-  public async findById(id: number): Promise<Order> {
-    return await this.orderRepository.getById(id)
-  }
-
-  public async findAllOrders(): Promise<Order[]> {
-    return await this.orderRepository.getAll()
-  }
-
-  private async createPayment(order: Order): Promise<Payment> {
-    const payment = {
-      order
-    } as Payment
-
-    return payment
-  }
-
+		return payment;
+	}
 }
