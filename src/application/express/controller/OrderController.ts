@@ -35,19 +35,19 @@ const orderService: OrderService = new OrderService(
 );
 
 router.post("/", async (req: Request<{}, {}, Order>, res: Response<Order>) => {
-	const order = await orderService.createOrder(req.body);
+	const order = await orderService.save(req.body);
 	res.json(order);
 });
 
 router.get("/:id", async (req: Request, res: Response<Order>) => {
 	const id = parseInt(req.params.id);
 
-	const order = await orderService.findById(id);
+	const order = await orderService.getById(id);
 	res.json(order);
 });
 
 router.get("/", async (req: Request<{}>, res: Response<Order[]>) => {
-	const orders = await orderService.findAllOrders();
+	const orders = await orderService.getAll();
 	res.json(orders);
 });
 
