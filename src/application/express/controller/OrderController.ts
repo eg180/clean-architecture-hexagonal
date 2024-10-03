@@ -19,8 +19,8 @@ const orderInMemoryRepository: Repository<Order> =
 const itemInMemoryRepository: Repository<Item> = new InMemoryItemRepository();
 const paymentInMemoryClient: Client<Payment> = new InMemoryPaymentClient();
 
-const orderTypeOrmRepository: Repository<Order> = new TypeOrmOrderRepository();
-const itemTypeOrmRepository: Repository<Item> = new TypeOrmItemRepository();
+// const orderTypeOrmRepository: Repository<Order> = new TypeOrmOrderRepository();
+// const itemTypeOrmRepository: Repository<Item> = new TypeOrmItemRepository();
 
 // const orderService: OrderService = new OrderService(
 // 	orderTypeOrmRepository,

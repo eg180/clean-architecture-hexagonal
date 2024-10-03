@@ -1,31 +1,45 @@
 import express from "express";
 import { Response, Request } from "express";
-import { InMemoryItemRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
-import { Repository } from "../../../core/ports/repository/Repository";
 import { Item } from "../../../core/domain/entities/Item";
-// import { TypeOrmItemRepository } from "../../../infrastructure/adapters/repository/typeorm/TypeOrmItemRepository";
-import { ItemService } from "../../../core/domain/services/ItemService";
+import { ItemApplicationService } from "../../services/ItemApplicationService";
 
 const router = express.Router();
 
-// const itemTypeOrmRepository: Repository<Item> = new TypeOrmItemRepository();
-const inMemoryRepository: Repository<Item> = new InMemoryItemRepository();
+export class ItemController {
+	constructor(private itemApplicationService: ItemApplicationService) {}
 
-const itemService: ItemService = new ItemService(inMemoryRepository);
+	async createItem(req: Request<{}, {}, Item>, res: Response) {
+		try {
+			const item = await this.itemApplicationService.createItem(req.body);
+			res.status(201).json(item);
+		} catch (error) {
+			res.status(400).json({ error: error.message });
+		}
+	}
 
-router.post("/", async (req: Request<{}, {}, Item>, res: Response<Item>) => {
-	const item = await itemService.save(req.body);
-	res.json(item);
-});
+	async getById(req: Request, res: Response) {
+		try {
+			const item = await this.itemApplicationService.getById(
+				parseInt(req.params.id)
+			);
+			if (item) {
+				res.json(item);
+			} else {
+				res.status(404).json({ error: "Item not found" });
+			}
+		} catch (error) {
+			res.status(500).json({ error: error.message });
+		}
+	}
 
-router.get("/:id", async (req, res) => {
-	const item = await itemService.getById(parseInt(req.params.id));
-	res.json(item);
-});
-
-router.get("/", async (_, res) => {
-	const items = await itemService.getAll();
-	res.json(items);
-});
+	async getAll(_: Request, res: Response) {
+		try {
+			const items = await this.itemApplicationService.getAll();
+			res.json(items);
+		} catch (error) {
+			res.status(500).json({ error: error.message });
+		}
+	}
+}
 
 export default router;

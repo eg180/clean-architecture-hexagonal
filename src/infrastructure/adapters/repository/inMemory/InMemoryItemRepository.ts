@@ -19,4 +19,9 @@ export class InMemoryItemRepository implements Repository<Item> {
 	getAll(): Promise<Item[]> {
 		return Promise.resolve(this.itemList);
 	}
+
+	clear(): void {
+		this.itemList = [];
+		InMemoryItemRepository.id = 0;
+	}
 }

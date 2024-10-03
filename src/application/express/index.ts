@@ -5,6 +5,7 @@ import OrderController from "./controller/OrderController";
 import { errorHandler } from "./error/errorHandler";
 // import { AppDataSource } from "../../infrastructure/adapters/repository/typeorm/data-source";
 import ItemController from "./controller/ItemController";
+import itemRoutes from "../express/routes/itemRoutes";
 
 const app = express();
 const PORT = 3000;
@@ -19,7 +20,7 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/order", OrderController);
-app.use("/api/v1/item", ItemController);
+app.use("/api/v1/item", itemRoutes);
 
 app.use(errorHandler);
 

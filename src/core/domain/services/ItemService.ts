@@ -1,23 +1,13 @@
 import { Item } from "../entities/Item";
-import { Repository } from "../../ports/repository/Repository";
 
-export class ItemService implements Repository<Item> {
-	private readonly itemRepository: Repository<Item>;
+export class ItemService {
+	validateItem(item: Item): boolean {
+		// Implement business rules for item validation
+		return item.name.length > 0 && parseInt(item.price) > 0;
+	}
 
-	constructor(itemRepository: Repository<Item>) {
-		this.itemRepository = itemRepository;
-	}
-	public async save(item: Item): Promise<Item> {
-		const itemSaved = await this.itemRepository.save(item);
-
-		return itemSaved;
-	}
-	public async getById(id: number): Promise<Item> {
-		const item = await this.itemRepository.getById(id);
-		return item;
-	}
-	public async getAll(): Promise<Item[]> {
-		const items = await this.itemRepository.getAll();
-		return items;
+	calculateDiscount(item: Item): number {
+		// Implement business logic for calculating discounts
+		return parseInt(item.price) * 0.1; // 10% discount
 	}
 }
