@@ -1,5 +1,5 @@
-import { Order } from "../../../core/domain/orders/Order";
-import { Repository } from "../../../core/ports/repository/Repository";
+import { Order } from "../../../../core/domain/entities/Order";
+import { Repository } from "../../../../core/ports/repository/Repository";
 
 export class InMemoryOrderRepository implements Repository<Order> {
 	private orderList: Order[] = [];

@@ -1,5 +1,5 @@
 import { InMemoryItemRepository } from "../../adapters/repository/inMemory/InMemoryItemRepository";
-import { Item } from "../domain/items/Item";
+import { Item } from "../domain/entities/Item";
 import { Repository } from "../ports/repository/Repository";
 import { ItemService } from "./ItemService";
 

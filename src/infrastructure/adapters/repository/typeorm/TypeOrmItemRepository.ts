@@ -1,6 +1,6 @@
 import { Repository as RepositoryEntity } from "typeorm";
-import { Item } from "../../../core/domain/items/Item";
-import { Repository } from "../../../core/ports/repository/Repository";
+import { Item } from "../../../../core/domain/entities/Item";
+import { Repository } from "../../../../core/ports/repository/Repository";
 import { AppDataSource } from "./data-source";
 import { ItemEntity } from "./entity/ItemEntity";
 

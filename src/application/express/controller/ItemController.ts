@@ -1,10 +1,10 @@
 import express from "express";
 import { Response, Request } from "express";
-import { InMemoryItemRepository } from "../../../adapters/repository/inMemory/InMemoryItemRepository";
+import { InMemoryItemRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
 import { Repository } from "../../../core/ports/repository/Repository";
-import { Item } from "../../../core/domain/items/Item";
-import { TypeOrmItemRepository } from "../../../adapters/repository/typeorm/TypeOrmItemRepository";
-import { ItemService } from "../../../core/service/ItemService";
+import { Item } from "../../../core/domain/entities/Item";
+// import { TypeOrmItemRepository } from "../../../infrastructure/adapters/repository/typeorm/TypeOrmItemRepository";
+import { ItemService } from "../../../core/domain/services/ItemService";
 
 const router = express.Router();
 

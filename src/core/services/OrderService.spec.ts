@@ -1,10 +1,10 @@
 import { InMemoryPaymentClient } from "../../adapters/client/InMemoryPaymentClient";
 import { InMemoryItemRepository } from "../../adapters/repository/inMemory/InMemoryItemRepository";
 import { InMemoryOrderRepository } from "../../adapters/repository/inMemory/InMemoryOrderRepository";
-import { Item } from "../domain/items/Item";
-import { Order } from "../domain/orders/Order";
-import { Payment } from "../domain/payments/Payment";
-import { NotFoundError } from "../error/NotFoundError";
+import { Item } from "../domain/entities/Item";
+import { Order } from "../domain/entities/Order";
+import { Payment } from "../domain/entities/Payment";
+import { NotFoundError } from "../../error/NotFoundError";
 import { Client } from "../ports/client/Client";
 import { Repository } from "../ports/repository/Repository";
 import { OrderService } from "./OrderService";

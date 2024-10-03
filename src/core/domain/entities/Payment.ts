@@ -1,4 +1,4 @@
-import { Order } from "../orders/Order";
+import { Order } from "./Order";
 
 export interface Payment {
 	id: number;

@@ -1,16 +1,16 @@
 import express from "express";
 import { Response, Request } from "express";
-import { OrderService } from "../../../core/service/OrderService";
-import { InMemoryItemRepository } from "../../../adapters/repository/inMemory/InMemoryItemRepository";
-import { InMemoryPaymentClient } from "../../../adapters/client/InMemoryPaymentClient";
+import { OrderService } from "../../../core/domain/services/OrderService";
+import { InMemoryItemRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
+import { InMemoryPaymentClient } from "../../../infrastructure/adapters/client/InMemoryPaymentClient";
 import { Repository } from "../../../core/ports/repository/Repository";
 import { Client } from "../../../core/ports/client/Client";
-import { Order } from "../../../core/domain/orders/Order";
-import { Item } from "../../../core/domain/items/Item";
-import { Payment } from "../../../core/domain/payments/Payment";
-import { InMemoryOrderRepository } from "../../../adapters/repository/inMemory/InMemoryOrderRepository";
-import { TypeOrmOrderRepository } from "../../../adapters/repository/typeorm/TypeOrmOrderRepository";
-import { TypeOrmItemRepository } from "../../../adapters/repository/typeorm/TypeOrmItemRepository";
+import { Order } from "../../../core/domain/entities/Order";
+import { Item } from "../../../core/domain/entities/Item";
+import { Payment } from "../../../core/domain/entities/Payment";
+import { InMemoryOrderRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryOrderRepository";
+import { TypeOrmOrderRepository } from "../../../infrastructure/adapters/repository/typeorm/TypeOrmOrderRepository";
+import { TypeOrmItemRepository } from "../../../infrastructure/adapters/repository/typeorm/TypeOrmItemRepository";
 
 const router = express.Router();
 

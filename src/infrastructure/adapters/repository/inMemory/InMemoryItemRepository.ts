@@ -1,5 +1,5 @@
-import { Item } from "../../../core/domain/items/Item";
-import { Repository } from "../../../core/ports/repository/Repository";
+import { Item } from "../../../../core/domain/entities/Item";
+import { Repository } from "../../../../core/ports/repository/Repository";
 
 export class InMemoryItemRepository implements Repository<Item> {
 	private itemList: Item[] = [];

@@ -3,7 +3,7 @@ import express from "express";
 import { Request, Response } from "express";
 import OrderController from "./controller/OrderController";
 import { errorHandler } from "./error/errorHandler";
-import { AppDataSource } from "../../adapters/repository/typeorm/data-source";
+// import { AppDataSource } from "../../infrastructure/adapters/repository/typeorm/data-source";
 import ItemController from "./controller/ItemController";
 
 const app = express();

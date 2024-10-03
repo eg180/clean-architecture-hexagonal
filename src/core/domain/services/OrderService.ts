@@ -1,10 +1,10 @@
-import { Item } from "../domain/items/Item";
-import { Order } from "../domain/orders/Order";
-import { Payment } from "../domain/payments/Payment";
-import { NotFoundError } from "../error/NotFoundError";
-import { Repository } from "../ports/repository/Repository";
+import { Item } from "../entities/Item";
+import { Order } from "../entities/Order";
+import { Payment } from "../entities/Payment";
+import { NotFoundError } from "../../../error/NotFoundError";
+import { Repository } from "../../ports/repository/Repository";
 
-import { Client } from "../ports/client/Client";
+import { Client } from "../../ports/client/Client";
 
 export class OrderService implements Repository<Order> {
 	private readonly orderRepository: Repository<Order>;

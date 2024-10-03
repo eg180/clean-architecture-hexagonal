@@ -1,5 +1,5 @@
-import { Item } from "../domain/items/Item";
-import { Repository } from "../ports/repository/Repository";
+import { Item } from "../entities/Item";
+import { Repository } from "../../ports/repository/Repository";
 
 export class ItemService implements Repository<Item> {
 	private readonly itemRepository: Repository<Item>;
