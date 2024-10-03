@@ -12,7 +12,7 @@ export class InMemoryItemRepository implements Repository<Item> {
 	}
 
 	getById(id: number): Promise<Item> {
-		const item = this.itemList.find((item) => item.id === id);
+		const item = this.itemList.find((item) => item.id === id) ?? ({} as Item);
 		return Promise.resolve(item);
 	}
 
