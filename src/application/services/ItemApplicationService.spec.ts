@@ -2,8 +2,9 @@ import { Item } from "../../core/domain/entities/Item";
 import { ItemApplicationService } from "./ItemApplicationService";
 import { ItemService } from "../../core/domain/services/ItemService";
 import { InMemoryItemRepository } from "../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
+import { InMemoryOrderRepository } from "../../infrastructure/adapters/repository/inMemory/InMemoryOrderRepository";
 
-describe("Item Application Service", () => {
+describe("ItemApplicationService", () => {
 	let itemApplicationService: ItemApplicationService;
 	let inMemoryRepository: InMemoryItemRepository;
 
@@ -78,5 +79,40 @@ describe("Item Application Service", () => {
 		expect(items).toEqual(
 			expect.arrayContaining([expect.objectContaining({ id: 4 })])
 		);
+	});
+});
+
+describe("it correctly implements ItemService", () => {
+	let inMemoryRepository: InMemoryItemRepository;
+	let itemApplicationService: ItemApplicationService;
+	let sut: ItemService;
+	beforeEach(() => {
+		sut = new ItemService();
+	});
+
+	it("should return false when an invalid item passed to validateItem method", () => {
+		const invalidItem = {
+			name: "",
+			price: "3.99",
+		};
+		const result = sut.validateItem(invalidItem);
+		expect(result).toBe(false);
+	});
+	it("should return true when an valid item passed to validateItem method", () => {
+		const validItem = {
+			name: "Toy",
+			price: "4.99",
+		};
+
+		const result = sut.validateItem(validItem);
+		expect(result).toBe(true);
+	});
+	it("should correctly calculate a discount", () => {
+		const item = {
+			name: "Toy",
+			price: "4.99",
+		};
+		const result = sut.calculateDiscount(item);
+		expect(result).toBe(0.49);
 	});
 });
