@@ -4,8 +4,8 @@ import { Request, Response } from "express";
 import OrderController from "./controller/OrderController";
 import { errorHandler } from "./error/errorHandler";
 // import { AppDataSource } from "../../infrastructure/adapters/repository/typeorm/data-source";
-import ItemController from "./controller/ItemController";
 import itemRoutes from "../express/routes/itemRoutes";
+import orderRoutes from "../express/routes/orderRoutes";
 
 const app = express();
 const PORT = 3000;
@@ -19,7 +19,7 @@ app.get("/health", (req: Request, res: Response) => {
 	res.send("Application using Express!!!");
 });
 
-app.use("/api/v1/order", OrderController);
+app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/item", itemRoutes);
 
 app.use(errorHandler);
