@@ -7,7 +7,7 @@ import { Repository } from "../../ports/repository/Repository";
 import { Client } from "../../ports/client/Client";
 
 export class OrderService {
-	validateItem(order: Order): boolean {
+	validateItem(order: Omit<Order, "id" | "createdAt">): boolean {
 		return true;
 	}
 }
