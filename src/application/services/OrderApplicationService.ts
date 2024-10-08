@@ -8,7 +8,7 @@ export class OrderApplicationService {
 		private orderRepository: Repository<Order>
 	) {}
 
-	public async save(order: Order): Promise<Order> {
+	public async save(order: Omit<Order, "id" | "createdAt">): Promise<Order> {
 		if (!this.orderService.validateItem(order)) {
 			throw new Error("Invalid item");
 		}

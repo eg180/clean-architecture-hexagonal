@@ -20,4 +20,9 @@ export class InMemoryOrderRepository implements Repository<Order> {
 	getAll(): Promise<Order[]> {
 		return Promise.resolve(this.orderList);
 	}
+
+	clear(): void {
+		this.orderList = [];
+		InMemoryOrderRepository.id = 0;
+	}
 }
