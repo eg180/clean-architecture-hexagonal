@@ -22,74 +22,20 @@ describe("Order application service", () => {
 		orderRepository.clear();
 	});
 
-	it("should create an order", async () => {
-		const orderPayload = {
-			amount: "200.00",
-			items: [
-				{
-					id: 1,
-					name: "Product A",
-					price: "20.00",
-				},
-				{
-					id: 2,
-					name: "Product B",
-					price: "30.00",
-				},
-			],
-			payments: [
-				{
-					id: 1,
-					paidAt: new Date("2023-12-31T23:59:59Z"),
-				},
-			],
-		};
-
-		const order = await orderApplicationService.save(orderPayload);
-		expect(order.id).toEqual(1);
-	});
-
-	it("should get order by id", async () => {
-		const orderPayload = {
-			amount: "200.00",
-			items: [
-				{
-					id: 1,
-					name: "Product A",
-					price: "20.00",
-				},
-				{
-					id: 2,
-					name: "Product B",
-					price: "30.00",
-				},
-			],
-			payments: [
-				{
-					id: 1,
-					paidAt: new Date("2023-12-31T23:59:59Z"),
-				},
-			],
-		};
-		await orderApplicationService.save(orderPayload);
-		const result = await orderApplicationService.getById(1);
-		expect(result.id).toEqual(1);
-	});
-
-	it("should find all the orders", async () => {
-		const orders = [
-			{
+	describe("save", () => {
+		it("should create an order", async () => {
+			let orderPayload = {
 				amount: "200.00",
 				items: [
 					{
 						id: 1,
 						name: "Product A",
-						price: "20.00",
+						price: "175.00",
 					},
 					{
 						id: 2,
 						name: "Product B",
-						price: "30.00",
+						price: "25.00",
 					},
 				],
 				payments: [
@@ -98,34 +44,187 @@ describe("Order application service", () => {
 						paidAt: new Date("2023-12-31T23:59:59Z"),
 					},
 				],
-			},
-			{
-				amount: "300.00",
+			};
+
+			const order = await orderApplicationService.save(orderPayload);
+			expect(order.id).toEqual(1);
+		});
+		it("should throw an error if the items property is not an array", async () => {
+			const invalidOrderPayload = {
+				amount: "200.00",
+				items: {
+					id: 1,
+					name: "Product A",
+					price: "200.00",
+				},
+
+				payments: [
+					{
+						id: 1,
+						paidAt: new Date("2023-12-31T23:59:59Z"),
+					},
+				],
+			};
+
+			await expect(
+				// @ts-ignore
+				orderApplicationService.save(invalidOrderPayload)
+			).rejects.toThrowError("Invalid order");
+		});
+		it("should throw an error if the amount is not a string", async () => {
+			const invalidOrderPayload = {
+				amount: 200.0,
+				items: {
+					id: 1,
+					name: "Product A",
+					price: "200.00",
+				},
+
+				payments: [
+					{
+						id: 1,
+						paidAt: new Date("2023-12-31T23:59:59Z"),
+					},
+				],
+			};
+
+			await expect(
+				// @ts-ignore
+				orderApplicationService.save(invalidOrderPayload)
+			).rejects.toThrowError("Invalid order");
+		});
+
+		it("should throw an error if payments is not an array", async () => {
+			const invalidOrderPayload = {
+				amount: "450.00",
+				items: {
+					id: 1,
+					name: "Product J",
+					price: "450.00",
+				},
+
+				payments: {
+					id: 1,
+					paidAt: new Date("2023-12-31T23:59:59Z"),
+				},
+			};
+
+			await expect(
+				// @ts-ignore
+				orderApplicationService.save(invalidOrderPayload)
+			).rejects.toThrowError("Invalid order");
+		});
+
+		it("should throw an error if the order amount is not equal to the items total", async () => {
+			let orderPayload = {
+				amount: "1125.00",
 				items: [
 					{
 						id: 1,
-						name: "Product A",
-						price: "20.00",
+						name: "Product N",
+						price: "100.00",
 					},
 					{
 						id: 2,
-						name: "Product B",
-						price: "30.00",
+						name: "Product M",
+						price: "25.00",
 					},
 				],
 				payments: [
 					{
-						id: 2,
-						paidAt: new Date("2022-11-31T23:59:59Z"),
+						id: 1,
+						paidAt: new Date("2023-12-31T23:59:59Z"),
 					},
 				],
-			},
-		];
-		orders.forEach(async (order) => {
-			await orderApplicationService.save(order);
-		});
+			};
 
-		const result = await orderApplicationService.getAll();
-		expect(result).toHaveLength(2);
+			await expect(
+				orderApplicationService.save(orderPayload)
+			).rejects.toThrowError("Invalid order");
+		});
+	});
+
+	describe("getById", () => {
+		it("should get order by id", async () => {
+			let orderPayload = {
+				amount: "200.00",
+				items: [
+					{
+						id: 1,
+						name: "Product A",
+						price: "190.00",
+					},
+					{
+						id: 2,
+						name: "Product B",
+						price: "10.00",
+					},
+				],
+				payments: [
+					{
+						id: 1,
+						paidAt: new Date("2023-12-31T23:59:59Z"),
+					},
+				],
+			};
+			await orderApplicationService.save(orderPayload);
+			const result = await orderApplicationService.getById(1);
+			expect(result.id).toEqual(1);
+		});
+	});
+
+	describe("getAll", () => {
+		it("should find all the orders", async () => {
+			const orders = [
+				{
+					amount: "200.00",
+					items: [
+						{
+							id: 1,
+							name: "Product A",
+							price: "120.00",
+						},
+						{
+							id: 2,
+							name: "Product B",
+							price: "80.00",
+						},
+					],
+					payments: [
+						{
+							id: 1,
+							paidAt: new Date("2023-12-31T23:59:59Z"),
+						},
+					],
+				},
+				{
+					amount: "300.00",
+					items: [
+						{
+							id: 1,
+							name: "Product Fizz",
+							price: "220.00",
+						},
+						{
+							id: 2,
+							name: "Product Buzz",
+							price: "80.00",
+						},
+					],
+					payments: [
+						{
+							id: 2,
+							paidAt: new Date("2022-11-31T23:59:59Z"),
+						},
+					],
+				},
+			];
+			orders.forEach(async (order) => {
+				await orderApplicationService.save(order);
+			});
+
+			const result = await orderApplicationService.getAll();
+			expect(result).toHaveLength(2);
+		});
 	});
 });

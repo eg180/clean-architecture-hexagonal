@@ -11,7 +11,7 @@ export class OrderApplicationService {
 
 	public async save(order: OrderDTO): Promise<Order> {
 		if (!this.orderService.validateItem(order)) {
-			throw new Error("Invalid item");
+			throw new Error("Invalid order");
 		}
 		return this.orderRepository.save(order);
 	}
