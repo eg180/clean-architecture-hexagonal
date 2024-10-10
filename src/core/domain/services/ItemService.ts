@@ -3,7 +3,6 @@ import { ItemDTO } from "../../../application/dto/ItemDTO";
 export class ItemService {
 	validateItem(item: ItemDTO): boolean {
 		// Implement business rules for item validation
-		console.log("item name length", item.name.length);
 		return item.name.length > 0 && parseInt(item.price) > 0;
 	}
 
