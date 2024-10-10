@@ -1,14 +1,15 @@
+import { ItemDTO } from "../../../../application/dto/ItemDTO";
 import { Item } from "../../../../core/domain/entities/Item";
 import { Repository } from "../../../../core/ports/repository/Repository";
 
-export class InMemoryItemRepository implements Repository<Item> {
+export class InMemoryItemRepository implements Repository<ItemDTO> {
 	private itemList: Item[] = [];
 	private static id: number = 0;
 
-	save(item: Item): Promise<Item> {
-		item.id = InMemoryItemRepository.id += 1;
-		this.itemList.push(item);
-		return Promise.resolve(item);
+	save(item: ItemDTO): Promise<Item> {
+		(item as Item).id = InMemoryItemRepository.id += 1;
+		this.itemList.push(item as Item);
+		return Promise.resolve(item as Item);
 	}
 
 	getById(id: number): Promise<Item> {

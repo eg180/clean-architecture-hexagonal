@@ -1,13 +1,14 @@
 import { Item } from "../../core/domain/entities/Item";
+import { ItemDTO } from "../dto/ItemDTO";
 import { ItemService } from "../../core/domain/services/ItemService";
 import { Repository } from "../../core/ports/repository/Repository";
 
 export class ItemApplicationService {
 	constructor(
 		private itemService: ItemService,
-		private itemRepository: Repository<Item>
+		private itemRepository: Repository<ItemDTO>
 	) {}
-	public async createItem(item: Item): Promise<Item> {
+	public async createItem(item: ItemDTO): Promise<Item> {
 		if (!this.itemService.validateItem(item)) {
 			throw new Error("Invalid item");
 		}
@@ -19,6 +20,6 @@ export class ItemApplicationService {
 	}
 	public async getAll(): Promise<Item[]> {
 		const items = await this.itemRepository.getAll();
-		return items;
+		return items as Item[];
 	}
 }
