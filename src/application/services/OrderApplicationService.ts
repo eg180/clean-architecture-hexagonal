@@ -6,7 +6,7 @@ import { OrderDTO } from "../dto/OrderDTO";
 export class OrderApplicationService {
 	constructor(
 		private orderService: OrderService,
-		private orderRepository: Repository<Order>
+		private orderRepository: Repository<OrderDTO>
 	) {}
 
 	public async save(order: OrderDTO): Promise<Order> {
@@ -21,7 +21,7 @@ export class OrderApplicationService {
 		return order;
 	}
 
-	public async getAll(): Promise<Order[]> {
+	public async getAll(): Promise<OrderDTO[]> {
 		const orders = await this.orderRepository.getAll();
 		return orders;
 	}
