@@ -2,20 +2,17 @@ import { Item } from "../../core/domain/entities/Item";
 import { ItemApplicationService } from "./ItemApplicationService";
 import { ItemService } from "../../core/domain/services/ItemService";
 import { InMemoryItemRepository } from "../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
-import { InMemoryOrderRepository } from "../../infrastructure/adapters/repository/inMemory/InMemoryOrderRepository";
 import { ItemDTO } from "../dto/ItemDTO";
 
 describe("ItemApplicationService", () => {
-	let itemApplicationService: ItemApplicationService;
 	let inMemoryRepository: InMemoryItemRepository;
+	let itemService: ItemService;
+	let sut: ItemApplicationService;
 
 	beforeEach(() => {
-		const itemService = new ItemService();
+		itemService = new ItemService();
 		inMemoryRepository = new InMemoryItemRepository();
-		itemApplicationService = new ItemApplicationService(
-			itemService,
-			inMemoryRepository
-		);
+		sut = new ItemApplicationService(itemService, inMemoryRepository);
 	});
 
 	afterEach(() => {
@@ -28,9 +25,9 @@ describe("ItemApplicationService", () => {
 				price: "20.0",
 			};
 
-			const itemSaved = await itemApplicationService.createItem(item);
+			const actual = await sut.createItem(item);
 
-			expect(itemSaved.id).toEqual(1);
+			expect(actual.id).toEqual(1);
 		});
 
 		it("should throw an error for item with zero-length item name", async () => {
@@ -38,9 +35,8 @@ describe("ItemApplicationService", () => {
 				name: "",
 				price: "20.0",
 			};
-			await expect(
-				itemApplicationService.createItem(invalidItem)
-			).rejects.toThrowError("Invalid item");
+			const actual = sut.createItem(invalidItem);
+			await expect(actual).rejects.toThrowError("Invalid item");
 		});
 
 		it("should throw an error for item with a price of 0", async () => {
@@ -48,9 +44,9 @@ describe("ItemApplicationService", () => {
 				name: "Free item",
 				price: "0.0",
 			};
-			await expect(
-				itemApplicationService.createItem(invalidItem)
-			).rejects.toThrowError("Invalid item");
+			await expect(sut.createItem(invalidItem)).rejects.toThrowError(
+				"Invalid item"
+			);
 		});
 
 		it("should throw an error for item with a negative price", async () => {
@@ -58,9 +54,9 @@ describe("ItemApplicationService", () => {
 				name: "Refunded item",
 				price: "-1.0",
 			};
-			await expect(
-				itemApplicationService.createItem(invalidItem)
-			).rejects.toThrowError("Invalid item");
+			await expect(sut.createItem(invalidItem)).rejects.toThrowError(
+				"Invalid item"
+			);
 		});
 	});
 	describe("getById", () => {
@@ -76,9 +72,9 @@ describe("ItemApplicationService", () => {
 
 			const items = [item1, item2];
 
-			items.forEach((item) => itemApplicationService.createItem(item as Item));
+			items.forEach((item) => sut.createItem(item as Item));
 
-			const soughtItem = await itemApplicationService.getById(2);
+			const soughtItem = await sut.getById(2);
 
 			expect(soughtItem.id).toEqual(2);
 		});
@@ -105,9 +101,9 @@ describe("ItemApplicationService", () => {
 
 			const items = [item1, item2, item3, item4];
 
-			items.forEach((item) => itemApplicationService.createItem(item as Item));
+			items.forEach((item) => sut.createItem(item as Item));
 
-			const allItems = await itemApplicationService.getAll();
+			const allItems = await sut.getAll();
 
 			expect(allItems.length).toEqual(4);
 			expect(items).toEqual(
@@ -118,8 +114,6 @@ describe("ItemApplicationService", () => {
 });
 
 describe("it correctly implements ItemService", () => {
-	let inMemoryRepository: InMemoryItemRepository;
-	let itemApplicationService: ItemApplicationService;
 	let sut: ItemService;
 	beforeEach(() => {
 		sut = new ItemService();
@@ -130,8 +124,8 @@ describe("it correctly implements ItemService", () => {
 			name: "",
 			price: "3.99",
 		};
-		const result = sut.validateItem(invalidItem);
-		expect(result).toBe(false);
+		const actual = sut.validateItem(invalidItem);
+		expect(actual).toBe(false);
 	});
 	it("should return true when an valid item passed to validateItem method", () => {
 		const validItem = {
@@ -139,15 +133,15 @@ describe("it correctly implements ItemService", () => {
 			price: "4.99",
 		};
 
-		const result = sut.validateItem(validItem);
-		expect(result).toBe(true);
+		const actual = sut.validateItem(validItem);
+		expect(actual).toBe(true);
 	});
 	it("should correctly calculate a discount", () => {
 		const item = {
 			name: "Toy",
 			price: "4.99",
 		};
-		const result = sut.calculateDiscount(item);
-		expect(result).toBe(0.49);
+		const actual = sut.calculateDiscount(item);
+		expect(actual).toBe(0.49);
 	});
 });
