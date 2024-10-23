@@ -9,11 +9,6 @@
 		"compile": "tsc",
 		"test": "jest --passWithNoTests --no-cache --runInBand --verbose --coverage"
 	},
-	"jest": {
-		"preset": "ts-jest",
-		"testEnvironment": "node",
-		"setupFilesAfterEnv": []
-	},
 	"devDependencies": {
 		"@types/express": "^4.17.13",
 		"@types/jest": "^27.4.1",
