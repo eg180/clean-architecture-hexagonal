@@ -1,33 +1,16 @@
-import { Order } from "../entities/Order";
-import { OrderDTO } from "../../../application/dto/OrderDTO";
-import { ItemDTO } from "../../../application/dto/ItemDTO";
+import { Order } from "../aggregates/Order";
+import { Item } from "../aggregates/Item";
 
 export class OrderService {
-	validateItem(order: OrderDTO): boolean {
-		if (
-			typeof order.amount !== "string" ||
-			(order.items && !Array.isArray(order.items)) ||
-			(order.payments && !Array.isArray(order.payments)) ||
-			!this.itemTotalIsOrderTotal(order)
-		) {
+	public validateItem(orderData: any): boolean {
+		try {
+			// Use aggregate's validation
+			const order = Order.create(orderData.items, orderData.amount);
+			return true;
+		} catch (error) {
 			return false;
 		}
-
-		// Add more validation checks as needed
-
-		return true;
 	}
 
-	// other business logic if necessary
-	itemTotalIsOrderTotal(order: OrderDTO): boolean {
-		const itemsTotal: number = order.items.reduce((prev: any, curr) => {
-			if (prev?.price) {
-				return parseFloat(prev.price) + parseFloat(curr.price);
-			} else {
-				return curr;
-			}
-		}, 0);
-		console.log(itemsTotal, parseFloat(order.amount));
-		return itemsTotal === parseFloat(order.amount);
-	}
+	// Other methods using Order aggregate...
 }

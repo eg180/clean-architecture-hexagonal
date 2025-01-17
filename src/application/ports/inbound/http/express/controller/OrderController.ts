@@ -1,15 +1,15 @@
 import express, { Response, Request } from "express";
-import { OrderApplicationService } from "../../services/OrderApplicationService";
-import { Order } from "../../../core/domain/entities/Order";
+import { OrderApplicationService } from "../../../../../services/OrderApplicationService";
+import { Order } from "../../../../../../core/domain/aggregates/Order";
 
 const router = express.Router();
 export class OrderController {
 	constructor(private orderApplicationService: OrderApplicationService) {}
 
-	async createOrder(req: Request<{}, {}, Order>, res: Response) {
+	async createOrder(req: Request, res: Response) {
 		try {
 			const order = await this.orderApplicationService.save(req.body);
-			res.status(201).json(order);
+			res.status(201).json(order.toDTO());
 		} catch (error) {
 			res.status(400).json({ error: error.message });
 		}

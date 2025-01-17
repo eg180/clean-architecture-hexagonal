@@ -5,15 +5,7 @@ import { Order } from "../../domain/entities/Order";
 // Purpose: Define interfaces for core business logic to interact with external concerns.
 
 export interface Repository<T> {
-	save(
-		type: T
-	): Promise<
-		T & (T extends ItemDTO ? { id: number } : { id: number; createdAt: Date })
-	>;
-	getById(
-		id: number
-	): Promise<
-		T & (T extends ItemDTO ? { id: number } : { id: number; createdAt: Date })
-	>;
+	save(entity: T): Promise<T & (T extends ItemDTO ? { id: number } : T)>;
+	getById(id: number): Promise<T & (T extends ItemDTO ? { id: number } : T)>;
 	getAll(): Promise<T[]>;
 }

@@ -1,6 +1,6 @@
 import express, { Response, Request } from "express";
-import { Item } from "../../../core/domain/entities/Item";
-import { ItemApplicationService } from "../../services/ItemApplicationService";
+import { Item } from "../../../../../../core/domain/entities/Item";
+import { ItemApplicationService } from "../../../../../services/ItemApplicationService";
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ export class ItemController {
 
 	async createItem(req: Request<{}, {}, Item>, res: Response) {
 		try {
-			const item = await this.itemApplicationService.createItem(req.body);
+			const item = await this.itemApplicationService.save(req.body);
 			res.status(201).json(item);
 		} catch (error) {
 			res.status(400).json({ error: error.message });

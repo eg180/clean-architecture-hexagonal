@@ -1,15 +1,15 @@
-import { Order } from "../../core/domain/entities/Order";
+import { Order } from "../../core/domain/aggregates/Order";
 import { OrderService } from "../../core/domain/services/OrderService";
 import { Repository } from "../../core/ports/repository/Repository";
-import { OrderDTO } from "../dto/OrderDTO";
 
 export class OrderApplicationService {
 	constructor(
 		private orderService: OrderService,
-		private orderRepository: Repository<OrderDTO>
+		private orderRepository: Repository<Order>
 	) {}
 
-	public async save(order: OrderDTO): Promise<Order> {
+	public async save(orderDto: any): Promise<Order> {
+		const order = Order.fromDTO(orderDto);
 		if (!this.orderService.validateItem(order)) {
 			throw new Error("Invalid order");
 		}
@@ -21,7 +21,7 @@ export class OrderApplicationService {
 		return order;
 	}
 
-	public async getAll(): Promise<OrderDTO[]> {
+	public async getAll(): Promise<Order[]> {
 		const orders = await this.orderRepository.getAll();
 		return orders;
 	}

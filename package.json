@@ -4,9 +4,10 @@
 	"description": "hexagonal-example",
 	"main": "/dist/src/index.js",
 	"scripts": {
-		"start:express": "nodemon src/application/express/index.ts",
-		"start:fastify": "nodemon src/application/fastify/index.ts",
-		"compile": "tsc",
+		"build": "tsc",
+		"start:express": "npm run build && node dist/application/ports/inbound/http/express/index.js",
+		"dev:express": "ts-node src/application/ports/inbound/http/express/index.ts",
+		"start:fastify": "nodemon src/application/ports/inbound/http/fastify/index.ts",
 		"test": "jest --passWithNoTests --no-cache --runInBand --verbose --coverage"
 	},
 	"devDependencies": {

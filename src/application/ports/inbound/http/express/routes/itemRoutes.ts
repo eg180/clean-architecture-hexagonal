@@ -1,8 +1,8 @@
 import express from "express";
 import { ItemController } from "../controller/ItemController";
-import { ItemApplicationService } from "../../services/ItemApplicationService";
-import { ItemService } from "../../../core/domain/services/ItemService";
-import { InMemoryItemRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
+import { ItemApplicationService } from "../../../../../services/ItemApplicationService";
+import { ItemService } from "../../../../../../core/domain/services/ItemService";
+import { InMemoryItemRepository } from "../../../../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
 
 const router = express.Router();
 

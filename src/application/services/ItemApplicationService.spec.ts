@@ -18,14 +18,14 @@ describe("ItemApplicationService", () => {
 	afterEach(() => {
 		inMemoryRepository.clear();
 	});
-	describe("createItem", () => {
+	describe("save", () => {
 		it("should create an Item", async () => {
 			const item: ItemDTO = {
 				name: "Assistencia",
 				price: "20.0",
 			};
 
-			const actual = await sut.createItem(item);
+			const actual = await sut.save(item);
 
 			expect(actual.id).toEqual(1);
 		});
@@ -35,7 +35,7 @@ describe("ItemApplicationService", () => {
 				name: "",
 				price: "20.0",
 			};
-			const actual = sut.createItem(invalidItem);
+			const actual = sut.save(invalidItem);
 			await expect(actual).rejects.toThrowError("Invalid item");
 		});
 
@@ -44,9 +44,7 @@ describe("ItemApplicationService", () => {
 				name: "Free item",
 				price: "0.0",
 			};
-			await expect(sut.createItem(invalidItem)).rejects.toThrowError(
-				"Invalid item"
-			);
+			await expect(sut.save(invalidItem)).rejects.toThrowError("Invalid item");
 		});
 
 		it("should throw an error for item with a negative price", async () => {
@@ -54,9 +52,7 @@ describe("ItemApplicationService", () => {
 				name: "Refunded item",
 				price: "-1.0",
 			};
-			await expect(sut.createItem(invalidItem)).rejects.toThrowError(
-				"Invalid item"
-			);
+			await expect(sut.save(invalidItem)).rejects.toThrowError("Invalid item");
 		});
 	});
 	describe("getById", () => {
@@ -72,7 +68,7 @@ describe("ItemApplicationService", () => {
 
 			const items = [item1, item2];
 
-			items.forEach((item) => sut.createItem(item as Item));
+			items.forEach((item) => sut.save(item as Item));
 
 			const soughtItem = await sut.getById(2);
 
@@ -101,7 +97,7 @@ describe("ItemApplicationService", () => {
 
 			const items = [item1, item2, item3, item4];
 
-			items.forEach((item) => sut.createItem(item as Item));
+			items.forEach((item) => sut.save(item as Item));
 
 			const allItems = await sut.getAll();
 

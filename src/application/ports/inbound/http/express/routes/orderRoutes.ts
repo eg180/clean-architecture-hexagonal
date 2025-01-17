@@ -1,9 +1,9 @@
 import express from "express";
-import { OrderService } from "../../../core/domain/services/OrderService";
+import { OrderService } from "../../../../../../core/domain/services/OrderService";
 import { OrderController } from "../controller/OrderController";
-import { OrderApplicationService } from "../../services/OrderApplicationService";
-import { InMemoryItemRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
-import { InMemoryOrderRepository } from "../../../infrastructure/adapters/repository/inMemory/InMemoryOrderRepository";
+import { OrderApplicationService } from "../../../../../services/OrderApplicationService";
+import { InMemoryItemRepository } from "../../../../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
+import { InMemoryOrderRepository } from "../../../../../../infrastructure/adapters/repository/inMemory/InMemoryOrderRepository";
 
 const router = express.Router();
 

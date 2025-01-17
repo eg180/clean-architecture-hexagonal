@@ -1,5 +1,5 @@
 import { fastify } from "fastify";
-import { AppDataSource } from "../../infrastructure/adapters/repository/typeorm/data-source";
+import { AppDataSource } from "../../../../../infrastructure/adapters/repository/typeorm/data-source";
 import OrderController from "./controller/OrderController";
 
 const server = fastify({

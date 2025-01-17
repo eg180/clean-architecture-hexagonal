@@ -8,7 +8,7 @@ export class ItemApplicationService {
 		private itemService: ItemService,
 		private itemRepository: Repository<ItemDTO>
 	) {}
-	public async createItem(item: ItemDTO): Promise<Item> {
+	public async save(item: ItemDTO): Promise<Item> {
 		if (!this.itemService.validateItem(item)) {
 			throw new Error("Invalid item");
 		}
