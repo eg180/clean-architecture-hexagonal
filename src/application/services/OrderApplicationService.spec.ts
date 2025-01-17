@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Order } from "../../core/domain/entities/Order";
+import { IOrder } from "../../core/domain/interfaces/IOrder";
 import { OrderService } from "../../core/domain/services/OrderService";
 import { InMemoryOrderRepository } from "../../infrastructure/adapters/repository/inMemory/InMemoryOrderRepository";
 import { OrderApplicationService } from "./OrderApplicationService";
