@@ -113,3 +113,46 @@ npm run test
 This project is a fork of [Hexagonal Architecture Example](https://github.com/guilhermegarcia86/hexagonal-example), created by [guilhermegarcia86](https://github.com/guilhermegarcia86/hexagonal-example).
 
 Significant changes have been made to better align with clean code principles, including project restructuring, implementation for Orders service, and expanding test coverage.
+
+## Key Design Decisions
+
+### Aggregates vs DTOs
+
+- **Aggregates** (e.g., `Order`, `Item`): Used in domain logic, enforce business rules
+- **DTOs**: Used for data transfer across boundaries
+
+### Repository Pattern
+
+- Generic repository interface
+- Multiple implementations (In-memory, TypeORM)
+- Type-safe data access
+
+### Dependency Injection
+
+- Constructor-based injection
+- Loose coupling between components
+- Easier testing and maintenance
+
+## Testing
+
+The project includes comprehensive tests:
+
+- Unit tests for domain logic
+- Integration tests for repositories
+- End-to-end tests for API endpoints
+
+## Future Improvements
+
+- Add event sourcing
+- Implement CQRS pattern
+- Add more validation rules
+- Enhance error handling
+- Add API documentation
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
