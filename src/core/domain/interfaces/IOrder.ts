@@ -1,8 +1,11 @@
-import { Item } from "../entities/Item";
+import { Money } from "../valueObjects/Money";
+import { IItem } from "./IItem";
+import { IPayment } from "./IPayment";
 
 export interface IOrder {
 	id?: number;
-	items: Item[];
-	amount: string;
+	items: IItem[];
+	payments?: IPayment[];
+	amount: Money;
 	createdAt?: Date;
 }

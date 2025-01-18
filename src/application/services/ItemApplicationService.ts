@@ -1,4 +1,4 @@
-import { Item } from "../../core/domain/entities/Item";
+import { Item } from "../../core/domain/aggregates/Item";
 import { ItemDTO } from "../dto/ItemDTO";
 import { ItemService } from "../../core/domain/services/ItemService";
 import { Repository } from "../../core/ports/repository/Repository";
@@ -6,12 +6,13 @@ import { Repository } from "../../core/ports/repository/Repository";
 export class ItemApplicationService {
 	constructor(
 		private itemService: ItemService,
-		private itemRepository: Repository<ItemDTO>
+		private itemRepository: Repository<Item>
 	) {}
-	public async save(item: ItemDTO): Promise<Item> {
-		if (!this.itemService.validateItem(item)) {
+	public async save(itemDto: ItemDTO): Promise<Item> {
+		if (!this.itemService.validateItem(itemDto)) {
 			throw new Error("Invalid item");
 		}
+		const item = Item.fromDTO(itemDto);
 		return this.itemRepository.save(item);
 	}
 	public async getById(id: number): Promise<Item> {
@@ -20,6 +21,6 @@ export class ItemApplicationService {
 	}
 	public async getAll(): Promise<Item[]> {
 		const items = await this.itemRepository.getAll();
-		return items as Item[];
+		return items;
 	}
 }
