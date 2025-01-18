@@ -10,7 +10,7 @@ import { InMemoryItemRepository } from "../../../../../../infrastructure/adapter
 import { Item } from "../../../../../../core/domain/entities/Item";
 
 interface IdParams {
-	id: number;
+	id: string;
 }
 
 const itemRoutes: FastifyPluginAsync = async (

@@ -3,6 +3,7 @@ import { ItemController } from "../controller/ItemController";
 import { ItemApplicationService } from "../../../../../services/ItemApplicationService";
 import { ItemService } from "../../../../../../core/domain/services/ItemService";
 import { InMemoryItemRepository } from "../../../../../../infrastructure/adapters/repository/inMemory/InMemoryItemRepository";
+import { Item } from "../../../../../../core/domain/entities/Item";
 
 const router = express.Router();
 

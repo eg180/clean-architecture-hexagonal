@@ -17,9 +17,7 @@ export class OrderController {
 
 	async getById(req: Request, res: Response) {
 		try {
-			const order = await this.orderApplicationService.getById(
-				parseInt(req.params.id)
-			);
+			const order = await this.orderApplicationService.getById(req.params.id);
 			if (order) {
 				res.status(200).json(order);
 			} else {

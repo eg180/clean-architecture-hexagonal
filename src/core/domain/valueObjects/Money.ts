@@ -1,9 +1,9 @@
 export class Money {
 	private constructor(
-		private readonly amount: number,
-		private readonly currency: string = "USD"
+		private readonly _amount: number,
+		private readonly _currency: string = "USD"
 	) {
-		if (amount < 0) {
+		if (this._amount < 0) {
 			throw new Error("Amount cannot be negative");
 		}
 	}
@@ -18,13 +18,29 @@ export class Money {
 	}
 
 	public add(other: Money): Money {
-		if (this.currency !== other.currency) {
+		if (this._currency !== other._currency) {
 			throw new Error("Cannot add different currencies");
 		}
-		return new Money(this.amount + other.amount, this.currency);
+		return new Money(this._amount + other._amount, this._currency);
 	}
 
 	public equals(other: Money): boolean {
-		return this.amount === other.amount && this.currency === other.currency;
+		return this._amount === other._amount && this._currency === other._currency;
+	}
+
+	public isNegative(): boolean {
+		return this._amount < 0;
+	}
+
+	public isZero(): boolean {
+		return this._amount === 0;
+	}
+
+	public isPositive(): boolean {
+		return this._amount > 0;
+	}
+
+	public get amount(): number {
+		return this._amount;
 	}
 }

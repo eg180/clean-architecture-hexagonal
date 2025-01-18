@@ -9,14 +9,13 @@ export class OrderApplicationService {
 	) {}
 
 	public async save(orderDto: any): Promise<Order> {
+		console.log("orderDto - is the amount a string?", orderDto);
 		const order = Order.fromDTO(orderDto);
-		if (!this.orderService.validateItem(order)) {
-			throw new Error("Invalid order");
-		}
+
 		return this.orderRepository.save(order);
 	}
 
-	public async getById(id: number): Promise<Order> {
+	public async getById(id: string): Promise<Order> {
 		const order = await this.orderRepository.getById(id);
 		return order;
 	}

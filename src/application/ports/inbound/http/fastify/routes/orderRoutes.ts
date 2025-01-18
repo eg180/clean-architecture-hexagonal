@@ -30,7 +30,9 @@ const orderRoutes: FastifyPluginAsync = async (
 	});
 
 	server.get<{ Params: IdParams }>("/:id", {}, async (request, reply) => {
-		const order = await orderApplicationService.getById(request.params.id);
+		const order = await orderApplicationService.getById(
+			request.params.id.toString()
+		);
 		return reply.code(200).send(order);
 	});
 

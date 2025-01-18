@@ -3,6 +3,7 @@ import { Item } from "../../../../core/domain/entities/Item";
 import { Repository } from "../../../../core/ports/repository/Repository";
 import { AppDataSource } from "./data-source";
 import { ItemEntity } from "./entity/ItemEntity";
+import { Money } from "../../../../core/domain/valueObjects/Money";
 
 export class TypeOrmItemRepository implements Repository<Item> {
 	private readonly entityManager: RepositoryEntity<ItemEntity>;
@@ -19,8 +20,10 @@ export class TypeOrmItemRepository implements Repository<Item> {
 		return this.mapToItemModel(itemSaved);
 	}
 
-	async getById(id: number): Promise<Item> {
-		const itemEntity = await this.entityManager.findOneBy({ id });
+	async getById(id: string): Promise<Item> {
+		const itemEntity = await this.entityManager.findOneBy({
+			id: parseInt(id),
+		});
 
 		return this.mapToItemModel(itemEntity);
 	}
@@ -32,19 +35,22 @@ export class TypeOrmItemRepository implements Repository<Item> {
 	}
 
 	private mapToItemModel(itemEntity: ItemEntity): Item {
-		const itemModel: Item = {
-			id: itemEntity.id,
+		return {
+			id: itemEntity.id.toString(),
 			name: itemEntity.name,
-			price: itemEntity.price,
+			price: Money.fromString(itemEntity.price),
 		};
-		return itemModel;
 	}
 
 	private mapToItemEntity(item: Item): ItemEntity {
-		const itemEntity: ItemEntity = new ItemEntity();
-		itemEntity.id = item.id;
+		const itemEntity = new ItemEntity();
+		itemEntity.id = parseInt(item.id);
 		itemEntity.name = item.name;
-		itemEntity.price = item.price;
+		itemEntity.price = item.price.toString();
 		return itemEntity;
+	}
+
+	async clear(): Promise<void> {
+		await this.entityManager.clear();
 	}
 }

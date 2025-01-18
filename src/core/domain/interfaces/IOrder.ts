@@ -3,7 +3,7 @@ import { IItem } from "./IItem";
 import { IPayment } from "./IPayment";
 
 export interface IOrder {
-	id?: number;
+	id?: string;
 	items: IItem[];
 	payments?: IPayment[];
 	amount: Money;

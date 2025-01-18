@@ -1,7 +1,7 @@
 import { Money } from "../valueObjects/Money";
 
 export interface IItem {
-	id?: number;
+	id?: string;
 	name: string;
 	price: Money;
 }

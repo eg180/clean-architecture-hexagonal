@@ -1,7 +1,7 @@
 import { Money } from "../valueObjects/Money";
 
 export interface Item {
-	id: number;
+	id: string;
 	name: string;
 	price: Money;
 }

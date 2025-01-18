@@ -35,7 +35,7 @@ const OrderController: FastifyPluginAsync = async (
 	});
 
 	server.get<{ Params: idParams }>("/:id", {}, async (request, reply) => {
-		const id = request.params.id;
+		const id = request.params.id.toString();
 		const order = await orderApplicationService.getById(id);
 		return reply.code(200).send(order);
 	});

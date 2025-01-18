@@ -1,7 +1,7 @@
 import { Order } from "./Order";
 
 export interface Payment {
-	id: number;
+	id: string;
 	order?: Order;
 	paidAt: Date;
 }

@@ -9,13 +9,10 @@ export class ItemApplicationService {
 		private itemRepository: Repository<Item>
 	) {}
 	public async save(itemDto: ItemDTO): Promise<Item> {
-		if (!this.itemService.validateItem(itemDto)) {
-			throw new Error("Invalid item");
-		}
 		const item = Item.fromDTO(itemDto);
 		return this.itemRepository.save(item);
 	}
-	public async getById(id: number): Promise<Item> {
+	public async getById(id: string): Promise<Item> {
 		const item = await this.itemRepository.getById(id);
 		return item;
 	}

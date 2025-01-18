@@ -1,11 +1,14 @@
 import { Money } from "../valueObjects/Money";
 
 export class Item {
-	private _id: number;
+	private _id: string;
 	private _name: string;
 	private _price: Money;
 
 	private constructor(name: string, price: Money) {
+		if (!name || name.trim().length === 0) {
+			throw new Error("Item name cannot be empty");
+		}
 		this._name = name;
 		this._price = price;
 	}
@@ -19,6 +22,10 @@ export class Item {
 		return this._price;
 	}
 
+	public get id(): string {
+		return this._id;
+	}
+
 	public toDTO() {
 		return {
 			id: this._id,
@@ -28,9 +35,9 @@ export class Item {
 	}
 
 	public static fromDTO(dto: any): Item {
-		const moneyPrice = Money.fromString(dto.price);
-		const item = new Item(dto.name, moneyPrice);
-		item._id = dto.id;
-		return item;
+		if (!dto.name || !dto.price) {
+			throw new Error("Item requires name and price");
+		}
+		return Item.create(dto.name, dto.price);
 	}
 }

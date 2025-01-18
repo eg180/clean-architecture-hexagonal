@@ -1,13 +1,13 @@
 import { Order } from "../aggregates/Order";
-import { Item } from "../aggregates/Item";
 
 export class OrderService {
 	public validateItem(orderData: any): boolean {
 		try {
-			// Use aggregate's validation
-			const order = Order.create(orderData.items, orderData.amount);
-			return true;
+			// Let Order aggregate handle all validation
+			Order.create(orderData.items, orderData.amount, orderData.payments);
+			return true; // Order is valid if no errors thrown
 		} catch (error) {
+			// Any validation error from Order means invalid
 			return false;
 		}
 	}

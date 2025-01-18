@@ -7,6 +7,7 @@ import { AppDataSource } from "./data-source";
 import { ItemEntity } from "./entity/ItemEntity";
 import { OrderEntity } from "./entity/OrderEntity";
 import { PaymentEntity } from "./entity/PaymentEntity";
+import { Money } from "../../../../core/domain/valueObjects/Money";
 
 export class TypeOrmOrderRepository implements Repository<Order> {
 	private readonly entityManager: RepositoryEntity<OrderEntity>;
@@ -23,7 +24,7 @@ export class TypeOrmOrderRepository implements Repository<Order> {
 		return this.mapToOrderModel(orderSaved);
 	}
 
-	async getById(id: number): Promise<Order> {
+	async getById(id: string): Promise<Order> {
 		const orderEntity = await this.entityManager
 			.createQueryBuilder("order")
 			.where("order.id = :id", { id })
@@ -44,53 +45,49 @@ export class TypeOrmOrderRepository implements Repository<Order> {
 		return allOrders.map((order) => this.mapToOrderModel(order));
 	}
 
+	async clear(): Promise<void> {
+		await this.entityManager.clear();
+	}
+
 	private mapToOrderModel(orderEntity: OrderEntity): Order {
-		const itemModel = orderEntity.items.map((item) => {
-			const itemModel: Item = {
-				id: item.id,
-				name: item.name,
-				price: item.price,
-			};
-			return itemModel;
-		});
+		const itemModel = orderEntity.items.map((item) => ({
+			id: item.id.toString(),
+			name: item.name,
+			price: Money.fromString(item.price),
+		}));
 
-		const paymentModel = orderEntity.payments.map((payment) => {
-			const paymentModel: Payment = {
-				id: payment.id,
-				paidAt: payment.paidAt,
-			};
-			return paymentModel;
-		});
+		const paymentModel = orderEntity.payments.map((payment) => ({
+			id: payment.id.toString(),
+			paidAt: payment.paidAt,
+		}));
 
-		const orderModel: Order = {
-			id: orderEntity.id,
+		return {
+			id: orderEntity.id.toString(),
 			amount: orderEntity.amount,
 			items: itemModel,
 			payments: paymentModel,
 			createdAt: orderEntity.createdAt,
 		};
-
-		return orderModel;
 	}
 
 	private mapToOrderEntity(order: Order): OrderEntity {
 		const itemList = order.items.map((item) => {
 			const itemEntity: ItemEntity = new ItemEntity();
-			itemEntity.id = item.id;
+			itemEntity.id = parseInt(item.id);
 			itemEntity.name = item.name;
-			itemEntity.price = item.price;
+			itemEntity.price = item.price.toString();
 			return itemEntity;
 		});
 
 		const paymentList = order.payments.map((payment) => {
 			const paymentEntity: PaymentEntity = new PaymentEntity();
-			paymentEntity.id = payment.id;
+			paymentEntity.id = parseInt(payment.id);
 			paymentEntity.paidAt = payment.paidAt;
 			return paymentEntity;
 		});
 
 		const orderEntity: OrderEntity = new OrderEntity();
-		orderEntity.id = order.id;
+		orderEntity.id = parseInt(order.id);
 		orderEntity.amount = order.amount;
 		orderEntity.items = itemList;
 		orderEntity.payments = paymentList;

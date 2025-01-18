@@ -18,9 +18,7 @@ export class ItemController {
 
 	async getById(req: Request, res: Response) {
 		try {
-			const item = await this.itemApplicationService.getById(
-				parseInt(req.params.id)
-			);
+			const item = await this.itemApplicationService.getById(req.params.id);
 			if (item) {
 				res.json(item);
 			} else {

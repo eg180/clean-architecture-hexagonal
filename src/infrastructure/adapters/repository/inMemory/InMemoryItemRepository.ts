@@ -1,19 +1,20 @@
-import { ItemDTO } from "../../../../application/dto/ItemDTO";
-import { Item } from "../../../../core/domain/entities/Item";
+import { Item } from "../../../../core/domain/aggregates/Item";
 import { Repository } from "../../../../core/ports/repository/Repository";
+import { v4 as uuidv4 } from "uuid";
 
-export class InMemoryItemRepository implements Repository<ItemDTO> {
+export class InMemoryItemRepository implements Repository<Item> {
 	private itemList: Item[] = [];
-	private static id: number = 0;
+	private static id: string = uuidv4();
 
-	save(item: ItemDTO): Promise<Item> {
-		(item as Item).id = InMemoryItemRepository.id += 1;
-		this.itemList.push(item as Item);
-		return Promise.resolve(item as Item);
+	save(item: Item): Promise<Item> {
+		this.itemList.push(item);
+		return Promise.resolve(item);
 	}
-
-	getById(id: number): Promise<Item> {
-		const item = this.itemList.find((item) => item.id === id) ?? ({} as Item);
+	async getById(id: string): Promise<Item> {
+		const item = this.itemList.find((item) => item.id === id);
+		if (!item) {
+			throw new Error(`Item with id ${id} not found`);
+		}
 		return Promise.resolve(item);
 	}
 
@@ -23,6 +24,6 @@ export class InMemoryItemRepository implements Repository<ItemDTO> {
 
 	clear(): void {
 		this.itemList = [];
-		InMemoryItemRepository.id = 0;
+		InMemoryItemRepository.id = uuidv4();
 	}
 }
