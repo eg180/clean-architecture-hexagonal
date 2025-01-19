@@ -82,10 +82,8 @@ export class Order {
 			throw new Error("Payments must be an array");
 		}
 
-		if (!(dto.amount instanceof Money)) {
-			if (typeof dto.amount !== "string") {
-				throw new Error("Amount must be a string or Money instance");
-			}
+		if (typeof dto.amount !== "string") {
+			throw new Error("Amount must be a string");
 		}
 
 		try {
@@ -93,7 +91,11 @@ export class Order {
 			const payments = dto.payments.map((payment) =>
 				Payment.create(payment.amount, payment.paidAt, payment.id)
 			);
-			return Order.create(items, dto.amount, payments);
+
+			// Convert the amount from string to Money
+			const moneyAmount = Money.fromString(dto.amount);
+
+			return Order.create(items, moneyAmount, payments);
 		} catch (error) {
 			throw new Error(`Invalid order: ${error.message}`);
 		}

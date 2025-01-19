@@ -19,10 +19,23 @@ export class Payment {
 		return this._id;
 	}
 
-	public static create(amount: Money, paidAt: Date, id?: number): Payment {
-		if (amount.isNegative() || amount.isZero()) {
+	public static create(
+		amount: string | Money,
+		paidAt: Date,
+		id?: number
+	): Payment {
+		let moneyAmount: Money;
+
+		if (typeof amount === "string") {
+			moneyAmount = Money.fromString(amount); // Convert string to Money
+		} else {
+			moneyAmount = amount; // Already a Money instance
+		}
+
+		if (moneyAmount.isNegative() || moneyAmount.isZero()) {
 			throw new Error("Payment amount must be positive");
 		}
-		return new Payment(amount, paidAt, id);
+
+		return new Payment(moneyAmount, paidAt, id);
 	}
 }
